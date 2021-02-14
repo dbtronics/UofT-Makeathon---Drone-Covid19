@@ -20,6 +20,9 @@ struct MyData {
   byte roll;
   byte AUX1;
   byte AUX2;
+  byte AUX3;
+  byte AUX4;
+//  byte AUX5;
 };
 
 MyData data;
@@ -36,6 +39,9 @@ void resetData()
   data.roll = 127;
   data.AUX1 = 0;
   data.AUX2 = 0;
+  data.AUX3 = 0;//EXTRA 2 SWITCHES FOR FLIGHT MODES
+  data.AUX4 = 0;
+//  data.AUX5 = 0;
 }
 
 void setup()
@@ -66,12 +72,15 @@ void loop()
 {
   // The calibration numbers used here should be measured 
   // for your joysticks till they send the correct values.
-  data.throttle = mapJoystickValues( analogRead(A4), 0, 521, 1023, true ); //Change to A4 for potentiometer controlled
+  data.throttle = mapJoystickValues( analogRead(A0), 0, 521, 1023, true ); ////Changed to joystick and got the optimal throttle for hovering
   data.yaw      = mapJoystickValues( analogRead(A1), 0, 536, 1023, false ); //535
   data.pitch    = mapJoystickValues( analogRead(A2), 0, 502, 1023, true ); //501
   data.roll     = mapJoystickValues( analogRead(A3), 0, 511, 1023, false ); //512
   data.AUX1     = digitalRead(2); //The 2 toggle switches
   data.AUX2     = digitalRead(3);
+  data.AUX3     = digitalRead(4);//near AUX1
+  data.AUX4     = digitalRead(7);//near potentiometer
+//  data.AUX5     = digitalRead(A4);//potentiometer
 
   radio.write(&data, sizeof(MyData));
 }

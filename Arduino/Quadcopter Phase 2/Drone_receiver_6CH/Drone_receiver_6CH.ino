@@ -38,10 +38,10 @@ int pitchOffset = 0;//-1
 int rollOffset = 0;//3
 
 ////////////////////// PPM CONFIGURATION//////////////////////////
-#define channel_number 6  //set the number of channels
+#define channel_number 8  //set the number of channels
 #define sigPin 2  //set PPM signal output pin on the arduino
-#define PPM_FrLen 27000  //set the PPM frame length in microseconds (1ms = 1000µs)
-#define PPM_PulseLen 400  //set the pulse length
+#define PPM_FrLen 22500  //set the PPM frame length in microseconds (1ms = 1000µs). Taken from wikipedia
+#define PPM_PulseLen 300  //set the pulse length. Taken from wikipedia
 //////////////////////////////////////////////////////////////////
 
 int ppm[channel_number];
@@ -58,6 +58,9 @@ struct MyData {
   byte roll;
   byte AUX1;
   byte AUX2;
+  byte AUX3;//EXTRA 2 SWITCHES FOR FLIGHT MODES
+  byte AUX4; //Used for althold in arduino
+//  byte AUX5;
 };
 
 MyData data;
@@ -70,7 +73,10 @@ void resetData()
   data.pitch = 127;
   data.roll = 127;
   data.AUX1 = 0;
-  data.AUX2= 0;
+  data.AUX2 = 0;
+  data.AUX3 = 0;
+  data.AUX4 = 0;
+//  data.AUX5 = 0;
   
   setPPMValuesFromData();
 }
@@ -83,6 +89,9 @@ void setPPMValuesFromData()
   ppm[3] = map(data.roll + rollOffset,     0, 255, 1000, 2000);
   ppm[4] = map(data.AUX1,     0, 1, 1000, 2000);
   ppm[5] = map(data.AUX2,     0, 1, 1000, 2000);
+  ppm[6] = map(data.AUX3,     0, 1, 1000, 2000);
+  ppm[7] = map(data.AUX4,     0, 1, 1000, 2000);
+//  ppm[8] = map(data.AUX5,     0, 1, 1000, 2000);
 
 
   }
@@ -123,20 +132,6 @@ void setup()
   radio.openReadingPipe(1,pipeIn);
   radio.startListening();
 
-//  // Setup SD Card module
-//  Serial.print("Initializing SD card...");
-//
-//  if (!SD.begin(3)) {
-//    Serial.println("initialization failed!");
-//    while (1);
-//  }
-//  Serial.println("initialization done.");
-//
-//  myFile = SD.open("DroneReading.txt", FILE_WRITE);
-//  if (myFile) {
-//    myFile.println("Time(ms)\tReference Point (cm)\tCurrent Distance (cm)\tThrottle Value");
-//    myFile.close();
-//  }
 }
 
 /**************************************************/
@@ -169,82 +164,12 @@ void loop()
   }
 //  //  set PIDs here with data from sonar
 //  int throttle = data.throttle;
-//  boolean aux1 = data.AUX1;
-//  if (aux1==0) {
-//    throttle = 0;
-//    c = 0;
-//    data.throttle = throttle;
-//    cumError = 0; //Set this to 0 to start integral error from scratch
-//    Serial.println("Drone not started");
-//  } else {
-//    if (c<2) {
-//      throttle = 0;
-//      prevMillis = millis();
-//      c += 1;
-//      data.throttle = throttle;
-//      counterAnomaly = 0;
-//      Serial.println("Drone started and minimum throttle given\n\n");
-//    } else {
-////      Serial.println("Entered main body");
-//      currentMillis = millis();
-//      dt = currentMillis - prevMillis;
-//      setPoint = map(throttle, 0, 255, 5, 100);
-//      
-//      double distance = computeDistance();
-//      distance -= 8;
-//      if (distance>200 && counterAnomaly <1000) {
-//        distance = 0;
-//        counterAnomaly += 1;
-//      }
-//      
-////      Serial.println(distance);
-//      while (distance<0 || distance>100) distance = computeDistance();
-//
-////      Serial.println("got the distance");
-//      currentDistance = distance;
-//      error = setPoint - currentDistance;
-//      cumError += error;
-//      P = Kp*error;
-//      I = Ki*cumError*dt;
-//      D = Kd*(error-lastError)/dt;
-//      throttle = P+I+D;
-//      throttle = map(throttle, 5, 100, 0, 255);
-//      lastError = error;
-//      prevMillis = currentMillis;
-////      Remove anomalies in throttle values
-//      Serial.print("Actual Throttle with PID: ");
-//      Serial.println(map(throttle, 0, 255, 1000, 1750));
-//      if(throttle<0){
-//        data.throttle = 0;
-//      } else if (throttle > 255){
-//        data.throttle = 255;
-//      } else {
-//        data.throttle = throttle;
-//      }
-//      Serial.print("Setpoint: ");
-//      Serial.println(setPoint);
-//      Serial.print("Current Distance: ");
-//      Serial.println(currentDistance);
-////      Serial.print("Error: ");
-////      Serial.println(error);
-//      Serial.print("Current Throttle: ");
-//      Serial.println(map(data.throttle, 0, 255, 1000, 1750));
-//      
-//      Serial.println("\n\n\n"); //For Testing Purpose
-//
-//      // Store the logs so we can analyze it on matlab and come up with better PID tuning
-////      myFile.print(now);
-////      myFile.print(", ");
-////      myFile.print(setPoint);
-////      myFile.print(", ");
-////      myFile.print(currentDistance);
-////      myFile.print(", ");
-////      myFile.println(map(data.throttle, 0, 255, 1000, 1750));
-//    }
-//  }
+//  boolean hold = data.AUX4;
+  if(data.AUX4){
+    data.throttle = (int) 153; // (1450 (HOVERING THROTTLE) - 1000)/(1750 - 1000) * 255
+  }
+
   setPPMValuesFromData();
-//  myFile.close();
-//  Serial.println("End part of loop");
 }
 
 /**************************************************/
