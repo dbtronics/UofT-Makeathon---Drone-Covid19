@@ -166,8 +166,19 @@ void loop()
 //  int throttle = data.throttle;
 //  boolean hold = data.AUX4;
   if(data.AUX4){
+//    Change the throttle value for hovering
     data.throttle = (int) 153; // (1450 (HOVERING THROTTLE) - 1000)/(1750 - 1000) * 255
   }
+
+  ///////////////////
+  // Cristian Code //
+  // GPS Info https://abra-electronics.com/wireless/gps/mod-127-neo-6m-v2-gps-module-for-microcontrollers.html
+  // Need to change data.pitch (forward and backward) and data.roll (right and left)
+  // The signal values are going to be from 0, 255
+  // Add some limits like signal cannot be lower than 0 and/or cannot be greater than 255 (PREVENT OVERFLOW OTHERWISE DRONE WOULDN'T WORK)
+  // data.pitch range --> [0, 255] if (signal < MID_SIGNAL) { Drone moves backward} OR if (signal > MID_SIGNAL) { Drone moves forward }
+  // data.roll  range --> [0, 255] if (signal < MID_SIGNAL) { Drone moves left    } OR if (signal > MID_SIGNAL) { Drone moves right   }
+  ///////////////////
 
   setPPMValuesFromData();
 }
