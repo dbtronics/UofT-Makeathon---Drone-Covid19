@@ -19,10 +19,9 @@ while data != "":
     _, img = cap.read()
     data, _, _ = detector.detectAndDecode(img)
 
-if data:
-    print("Data found: " + data)
-    led.off()
- 
+
+print("Data found: " + data)
+led.off()
+
 led.off()
 cap.release()
-cv2.destroyAllWindows()
