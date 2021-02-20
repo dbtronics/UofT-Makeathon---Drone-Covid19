@@ -87,67 +87,56 @@ class X:
          if i is not None:
             self.pi.wave_delete(i)
 
-if __name__ == "__main__":
-
-   import time
-   import PPM
-   import pigpio
-
-   pi = pigpio.pi()
-
-   if not pi.connected:
-       print("error")
-       exit(0)
-
-   pi.wave_tx_stop() # Start with a clean slate.
-
-   ppm = PPM.X(pi, 6, frame_ms=20)
-
-#    updates = 0
-#    start = time.time()
-#    for chan in range(8):
-#       for pw in range(1000, 2000, 5):
-#          ppm.update_channel(chan, pw)
-#          updates += 1
-#    end = time.time()
-#    secs = end - start
-#    print("{} updates in {:.1f} seconds ({}/s)".format(updates, secs, int(updates/secs)))
+# if __name__ == "__main__":
 # 
+#    import time
+#    import PPM
+#    import pigpio
+# 
+#    pi = pigpio.pi()
+# 
+#    if not pi.connected:
+#        print("error")
+#        exit(0)
+# 
+#    pi.wave_tx_stop() # Start with a clean slate.
+# 
+#    ppm = PPM.X(pi, 6, frame_ms=20)
+# 
+#    throttle = 0
+#    yaw = 0
+#    pitch = 0
+#    roll = 0
+#    ARM = 0
+#    FAILSAFE = 0
+#    ANGLE_MODE = 0
+#    ALTHOLD = 0
+#    
+#    counter = 0
+#    
+#    print("Sending signals")
+#    for i in range(1000, 2000, 5):
+#         throttle = i
+#         yaw = i
+#         pitch = i
+#         roll = i
+#         for j in range(1000, 2000, 250):
+#             ARM = j
+#             FAILSAFE = j
+#             ANGLE_MODE = j
+#             ALTHOLD = j
+#             ppm.update_channels([throttle, yaw, pitch, roll,
+#                                  ARM, FAILSAFE, ANGLE_MODE, ALTHOLD])
+#         counter += 1
+#         print(str(counter) + " loop done")
+#    
+#    print("Loop completed")
+#    print("Sending final ppm signals")
 #    ppm.update_channels([1000, 2000, 1000, 2000, 1000, 2000, 1000, 2000])
-   throttle = 0
-   yaw = 0
-   pitch = 0
-   roll = 0
-   ARM = 0
-   FAILSAFE = 0
-   ANGLE_MODE = 0
-   ALTHOLD = 0
-   
-   counter = 0
-   
-   print("Sending signals")
-   for i in range(1000, 2000, 5):
-        throttle = i
-        yaw = i
-        pitch = i
-        roll = i
-        for j in range(1000, 2000, 250):
-            ARM = j
-            FAILSAFE = j
-            ANGLE_MODE = j
-            ALTHOLD = j
-            ppm.update_channels([throttle, yaw, pitch, roll,
-                                 ARM, FAILSAFE, ANGLE_MODE, ALTHOLD])
-        counter += 1
-        print(str(counter) + " loop done")
-   
-   print("Loop completed")
-   print("Sending final ppm signals")
-   ppm.update_channels([1000, 2000, 1000, 2000, 1000, 2000, 1000, 2000])
-   
-   time.sleep(2)
-   print("Sent")
-   ppm.cancel()
-   print("Program terminated")
-   pi.stop()
-   
+#    
+#    time.sleep(2)
+#    print("Sent")
+#    ppm.cancel()
+#    print("Program terminated")
+#    pi.stop()
+#    
